@@ -16,8 +16,11 @@ import {
   Link,
   Collapse,
   useToast,
+  InputGroup,
+  InputRightElement,
+  IconButton,
 } from '@chakra-ui/react';
-import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
+import { ChevronDownIcon, ChevronUpIcon, CloseIcon } from '@chakra-ui/icons';
 import { useGitHubSearch } from '../hooks/useGitHubSearch';
 import type { GitHubUser } from '../types';
 
@@ -81,6 +84,21 @@ export const UserSearch: React.FC = () => {
       toast({
         title: 'Error',
         description: 'Failed to process search input. Please try again.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  }, [handleSearch, toast]);
+
+  const handleClearSearch = useCallback(() => {
+    try {
+      handleSearch('');
+    } catch (error) {
+      console.error('Error clearing search:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to clear search. Please try again.',
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -196,17 +214,33 @@ export const UserSearch: React.FC = () => {
         flexDirection="column"
       >
         <VStack spacing={4} align="stretch" flex="1">
-          <Input
-            placeholder="Search GitHub users (min 3 characters)..."
-            value={searchTerm}
-            onChange={handleSearchInput}
-            size="lg"
-            isInvalid={!!searchError}
-            bg="white"
-            _dark={{ bg: 'gray.800' }}
-            maxLength={100}
-            aria-label="Search GitHub users"
-          />
+          <InputGroup size="lg">
+            <Input
+              placeholder="Search GitHub users (min 3 characters)..."
+              value={searchTerm}
+              onChange={handleSearchInput}
+              isInvalid={!!searchError}
+              bg="white"
+              _dark={{ bg: 'gray.800' }}
+              maxLength={100}
+              aria-label="Search GitHub users"
+              pr="4.5rem"
+            />
+            {searchTerm && (
+              <InputRightElement width="4.5rem">
+                <IconButton
+                  h="1.75rem"
+                  size="sm"
+                  onClick={handleClearSearch}
+                  icon={<CloseIcon />}
+                  aria-label="Clear search"
+                  variant="ghost"
+                  _hover={{ bg: 'gray.100' }}
+                  _dark={{ _hover: { bg: 'gray.700' } }}
+                />
+              </InputRightElement>
+            )}
+          </InputGroup>
 
           {searchError && renderError(searchError)}
           {renderNoResults()}
