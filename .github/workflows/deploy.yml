@@ -51,7 +51,7 @@ jobs:
       - name: Build
         run: pnpm build
         env:
-          VITE_BASE_URL: /github-user-search-test/
+          VITE_BASE_URL: /simple-github-users-search/
         
       - name: Setup Pages
         uses: actions/configure-pages@v4
